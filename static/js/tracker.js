@@ -1,5 +1,11 @@
 const december = [
     {
+        name: "Ранний подъём",
+        planned: [0, 3, 10, 30],
+        done: [5, 1],
+        undone: [15, 7]
+    },
+    {
         name: "JavaScript",
         planned: [0, 3, 10, 30],
         done: [5, 15],
@@ -12,6 +18,7 @@ const december = [
         undone: [11, 23]
     }
 ]
+const monthDays = 31;
 
 function setPlannedDone(e) {
     let classes = e.target.getAttribute("class");
@@ -36,17 +43,18 @@ function makeMonth(month) {
         ${month[i].name} 
     </div>
 `
-        for (let j = 0; j < 31; j++) {
+        for (let j = 0; j < monthDays; j++) {
             function inArray(value) {
                 return value === j;
             }
 
             let classes = "";
-            if (month[i].planned.filter(inArray).length >= 1) {
+            // Проверяем наличие указанного дня в запланированных, выполненных или пропущенных
+            if (month[i].planned.filter(inArray).length === 1) {
                 classes = "column is-narrow tracker planned"
-            } else if (month[i].done.filter(inArray).length >= 1) {
+            } else if (month[i].done.filter(inArray).length === 1) {
                 classes = "column is-narrow tracker done"
-            } else if (month[i].undone.filter(inArray).length >= 1) {
+            } else if (month[i].undone.filter(inArray).length === 1) {
                 classes = "column is-narrow tracker undone"
             } else {
                 classes = "column is-narrow tracker"
