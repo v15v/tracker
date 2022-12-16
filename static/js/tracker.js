@@ -112,6 +112,9 @@ function addNewHabit(e) {
         name.value = "";
         // Сохраняем состояние месяца в локальное хранилище
         saveMonthData();
+        // Вешаем обработчик на все дни трекера, так как добавленная новая
+        //  привычка обработчика не имеет.
+        addListner();
     }
 }
 
@@ -120,6 +123,15 @@ function saveMonthData() {
     localStorage.december = JSON.stringify(december);
 }
 
+
+// Вешаем обработчик события на каждый div дня месяца.
+function addListner() {
+    //  Ориентир - класс "tracker".
+    let elements = document.getElementsByClassName("tracker");
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].onclick = setHabitState;
+    }
+}
 
 function init() {
     // Пробуем загрузить данные из локального хранилища
@@ -134,12 +146,8 @@ function init() {
         printMonth(december);
     }
 
-    // Вешаем обработчик события на каждый div дня месяца.
-    //  Ориентир - класс "tracker".
-    let elements = document.getElementsByClassName("tracker");
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].onclick = setHabitState;
-    }
+    // Вешаем обработчик на все дни в трекере
+    addListner();
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.getElementById("addHabit").onkeydown = addNewHabit;
