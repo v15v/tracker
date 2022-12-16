@@ -11,7 +11,8 @@
 //  }
 
 
-// Хранит все данные по всем привычкам в этом месяце
+// Глобальная переменная.
+// Хранит все данные по всем привычкам в этом месяце.
 let december;
 
 // Количество дней в текущем месяце
@@ -20,18 +21,67 @@ const monthDays = 31;
 // Устанавливаем класс для элемента в зависимости от статуса привычки
 //  Цикл установки идет по кругу: planned -> done -> undone -> normal
 function setHabitState(e) {
+    // Получаем имя привычки
+    let habitName = getHabitName(e);
+    // Получаем объект привычки по имени
+    let habit = getHabitByName(december, habitName);
+    // Получаем день, по которому кликнули мышью
+    let targetDay = e.target.innerText;
+    // Преобразуем строку классов в массив, для точного поиска вхождения класса
     let classes = e.target.getAttribute("class").split(" ");
     if (classes.includes("planned")) {
         e.target.classList.remove("planned");
         e.target.classList.add("done");
+        // Получаем индекс указанного дня в массиве
+        let dayIndex = getDayIndex(habit, "planned", targetDay);
+        // Удаляем текущий день из массива запланированных
+        habit.planned.splice(dayIndex, 1);
+        // Добавляем текущий день в массив выполненных
+        habit.done.push(targetDay - 1);
     } else if (classes.includes("done")) {
         e.target.classList.remove("done");
         e.target.classList.add("undone");
+        // Получаем индекс указанного дня в массиве
+        let dayIndex = getDayIndex(habit, "done", targetDay);
+        // Удаляем текущий день из массива запланированных
+        habit.done.splice(dayIndex, 1);
+        // Добавляем текущий день в массив выполненных
+        habit.undone.push(targetDay - 1);
     } else if (classes.includes("undone")) {
         e.target.classList.remove("undone");
+        // Получаем индекс указанного дня в массиве
+        let dayIndex = getDayIndex(habit, "undone", targetDay);
+        // Удаляем текущий день из массива пропущенных
+        habit.undone.splice(dayIndex, 1);
     } else {
         e.target.classList.add("planned");
+        habit.planned.push(targetDay - 1);
     }
+    // Сохраняем состояние месяца в локальное хранилище
+    saveMonthData();
+}
+
+// Получаем индекс элемента массива по его содержимому
+function getDayIndex(habit, status, day) {
+    switch (status) {
+        case "planned":
+            return habit.planned.indexOf(parseInt(day) - 1);
+        case "done":
+            return habit.done.indexOf(parseInt(day) - 1);
+        case "undone":
+            return habit.undone.indexOf(parseInt(day) - 1);
+    }
+}
+
+// Получает имя привычки из свойств объекта, по которому кликнули мышью
+function getHabitName(e) {
+    return e.target.parentElement.firstElementChild.innerText;
+}
+
+
+// Получаем объект привычки по ее имени
+function getHabitByName(month, habitName) {
+    return month.filter(obj => obj.name === habitName)[0];
 }
 
 // Формируем OuterHTML содержащий все данные для указанной привычки
@@ -114,7 +164,7 @@ function addNewHabit(e) {
         saveMonthData();
         // Вешаем обработчик на все дни трекера, так как добавленная новая
         //  привычка обработчика не имеет.
-        addListner();
+        addListener();
     }
 }
 
@@ -125,7 +175,7 @@ function saveMonthData() {
 
 
 // Вешаем обработчик события на каждый div дня месяца.
-function addListner() {
+function addListener() {
     //  Ориентир - класс "tracker".
     let elements = document.getElementsByClassName("tracker");
     for (let i = 0; i < elements.length; i++) {
@@ -147,7 +197,7 @@ function init() {
     }
 
     // Вешаем обработчик на все дни в трекере
-    addListner();
+    addListener();
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.getElementById("addHabit").onkeydown = addNewHabit;
