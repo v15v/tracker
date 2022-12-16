@@ -10,6 +10,10 @@
 //      undone: [7, 12, 31]
 //  }
 
+
+// Хранит все данные по всем привычкам в этом месяце
+let december;
+
 // Количество дней в текущем месяце
 const monthDays = 31;
 
@@ -99,23 +103,37 @@ function addNewHabit(e) {
             undone: []
         }
         if (!habitInMonth(december, newHabit)) {
+            // Добавляем привычку в список текущего месяца
             december.push(newHabit);
+            // Выводим привычку на страницу
             printHabit(newHabit);
         }
         // Очищаем значение, чтобы в поле input ничего не сохранялось
         name.value = "";
+        // Сохраняем состояние месяца в локальное хранилище
+        saveMonthData();
     }
 }
 
-// Пробуем загрузить данные из локального хранилища
-let december = localStorage.december;
-if (december) {
-    december = JSON.parse(december);
-    // Выводим все отслеживаемые привычки текущего месяца
-    printMonth(december);
+// Сохраняем состояние месяца в локальное хранилище
+function saveMonthData() {
+    localStorage.december = JSON.stringify(december);
 }
 
+
 function init() {
+    // Пробуем загрузить данные из локального хранилища
+    december = localStorage.december;
+    if (typeof december !== "string") {
+        // Создаем массив, так как в локальном хранилище ничего нет
+        december = [];
+    } else {
+        // Преобразуем строку JSON в объект
+        december = JSON.parse(december);
+        // Выводим все отслеживаемые привычки текущего месяца
+        printMonth(december);
+    }
+
     // Вешаем обработчик события на каждый div дня месяца.
     //  Ориентир - класс "tracker".
     let elements = document.getElementsByClassName("tracker");
@@ -123,9 +141,8 @@ function init() {
         elements[i].onclick = setHabitState;
     }
 
+    // Вешаем обработчик нажатия клавиш в поле input
     document.getElementById("addHabit").onkeydown = addNewHabit;
-
-    localStorage.december = JSON.stringify(december);
 }
 
 window.onload = init;
