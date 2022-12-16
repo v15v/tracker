@@ -2,26 +2,14 @@
 //  запланировано, выполнено, не выполнено.
 //  Для каждого параметра указаны дни, для которых он применяется.
 //  Отсчет дней от нуля.
-const december = [
-    {
-        name: "Ранний подъём",
-        planned: [0, 3, 11, 30],
-        done: [5, 10],
-        undone: [15, 7]
-    },
-    {
-        name: "JavaScript",
-        planned: [3, 10, 30],
-        done: [5, 15],
-        undone: [18, 27]
-    },
-    {
-        name: "Golang",
-        planned: [0, 5, 10, 21],
-        done: [3, 15, 8],
-        undone: [11, 23, 30]
-    }
-]
+//  Например:
+//  let Habit = {
+//      name: name.value,
+//      planned: [0, 5, 19],
+//      done: [3, 28],
+//      undone: [7, 12, 31]
+//  }
+
 // Количество дней в текущем месяце
 const monthDays = 31;
 
@@ -73,28 +61,71 @@ function createHabitMonthOuterHTML(habit) {
 function printMonth(month) {
     // Перебор привычек в месяце и формирование OuterHTML для каждой из них
     for (let i = 0; i < month.length; i++) {
-        // Получаем главный div, внутри которого будем размещать привычки
-        let monthDiv = document.getElementById("month");
-        // Создаем новый элемент, который добавим в главный div
-        let newElement = document.createElement("div");
-        // Добавляем этот элемент в главный div месяца
-        monthDiv.appendChild(newElement);
-        // Вставляем сгенерированную размету для привычки в этот добавленный элемент
-        newElement.outerHTML = createHabitMonthOuterHTML(month[i]);
+        printHabit(month[i]);
     }
 }
 
+// Выводит привычку на страницу
+function printHabit(habit) {
+    // Получаем главный div, внутри которого будем размещать привычки
+    let monthDiv = document.getElementById("month");
+    // Создаем новый элемент, который добавим в главный div
+    let newElement = document.createElement("div");
+    // Добавляем этот элемент в главный div месяца
+    monthDiv.appendChild(newElement);
+    // Вставляем сгенерированную размету для привычки в этот добавленный элемент
+    newElement.outerHTML = createHabitMonthOuterHTML(habit);
+}
 
-function init() {
+// Проверяет есть ли уже данная привычка в списке месяца
+function habitInMonth(month, habit) {
+    for (let i = 0; i < month.length; i++) {
+        if (month[i].name === habit.name) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Добавляет привычку в список месяца.
+// Выводит привычку на странице.
+function addNewHabit(e) {
+    if (e.keyCode === 13) {
+        let name = document.getElementById("addHabit");
+        let newHabit = {
+            name: name.value,
+            planned: [],
+            done: [],
+            undone: []
+        }
+        if (!habitInMonth(december, newHabit)) {
+            december.push(newHabit);
+            printHabit(newHabit);
+        }
+        // Очищаем значение, чтобы в поле input ничего не сохранялось
+        name.value = "";
+    }
+}
+
+// Пробуем загрузить данные из локального хранилища
+let december = localStorage.december;
+if (december) {
+    december = JSON.parse(december);
     // Выводим все отслеживаемые привычки текущего месяца
     printMonth(december);
+}
 
+function init() {
     // Вешаем обработчик события на каждый div дня месяца.
     //  Ориентир - класс "tracker".
     let elements = document.getElementsByClassName("tracker");
     for (let i = 0; i < elements.length; i++) {
         elements[i].onclick = setHabitState;
     }
+
+    document.getElementById("addHabit").onkeydown = addNewHabit;
+
+    localStorage.december = JSON.stringify(december);
 }
 
 window.onload = init;
