@@ -8,7 +8,7 @@ const december = [
     {
         name: "Golang",
         planned: [0, 5, 10, 21],
-        done: [3, 15],
+        done: [3, 15, 8],
         undone: [18, 27]
     }
 ]
