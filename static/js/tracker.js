@@ -37,7 +37,16 @@ function makeMonth(month) {
     </div>
 `
         for (let j = 0; j < 31; j++) {
-            html = html + `\t<div class="column is-narrow tracker">
+            function inArray(value) {
+                return value === j;
+            }
+            let classes = "";
+            if (month[i].planned.filter(inArray).length >= 1){
+                classes = "column is-narrow tracker planned"
+            } else {
+                classes = "column is-narrow tracker"
+            }
+            html = html + `\t<div class="${classes}">
         ${(j + 1).toString().padStart(2, 0)}
     </div>
 `;
@@ -45,7 +54,7 @@ function makeMonth(month) {
         html = html + "</div>\n";
     }
 
-    console.log(html);
+    // console.log(html);
     return html;
 }
 
