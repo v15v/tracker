@@ -9,7 +9,7 @@ const december = [
         name: "Golang",
         planned: [0, 5, 10, 21],
         done: [3, 15, 8],
-        undone: [18, 27]
+        undone: [11, 23]
     }
 ]
 
@@ -40,9 +40,14 @@ function makeMonth(month) {
             function inArray(value) {
                 return value === j;
             }
+
             let classes = "";
-            if (month[i].planned.filter(inArray).length >= 1){
+            if (month[i].planned.filter(inArray).length >= 1) {
                 classes = "column is-narrow tracker planned"
+            } else if (month[i].done.filter(inArray).length >= 1) {
+                classes = "column is-narrow tracker done"
+            } else if (month[i].undone.filter(inArray).length >= 1) {
+                classes = "column is-narrow tracker undone"
             } else {
                 classes = "column is-narrow tracker"
             }
