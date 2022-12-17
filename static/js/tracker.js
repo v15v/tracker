@@ -91,7 +91,7 @@ function getHabitByName(month, habitName) {
 // Формируем OuterHTML содержащий все данные для указанной привычки
 function createHabitMonthOuterHTML(habit) {
     let html = `<div class="columns is-multiline is-mobile">
-    <div class="column has-text-right tracker has-text-weight-bold">
+    <div class="column has-text-right tracker has-text-weight-bold habit-name">
         ${habit.name} 
     </div>\n`;
     for (let i = 0; i < monthDays; i++) {
