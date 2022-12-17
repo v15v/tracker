@@ -61,7 +61,9 @@ function setHabitState(e) {
     saveMonthData();
 }
 
-// Получаем индекс элемента массива по его содержимому
+// Получаем индекс элемента массива по его содержимому.
+// В нашем массиве счет идет от нуля, и дни хранятся на
+// единицу меньше, чем в жизни.
 function getDayIndex(habit, status, day) {
     switch (status) {
         case "planned":
@@ -81,6 +83,8 @@ function getHabitName(e) {
 
 // Получаем объект привычки по ее имени
 function getHabitByName(month, habitName) {
+    // Возвращает массив из одного элемента. Мы берем первый,
+    //  чтобы получить сам объект
     return month.filter(obj => obj.name === habitName)[0];
 }
 
