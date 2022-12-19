@@ -10,6 +10,12 @@
 //      undone: [7, 12, 31]
 //  }
 
+class Month {
+    constructor(name, habits) {
+        this.name = name;
+        this.habits = habits;
+    }
+}
 
 // Глобальная переменная.
 // Хранит все данные по всем привычкам в этом месяце.

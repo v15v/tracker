@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  caddy:
+    image: tracker:latest
+    container_name: tracker
+    restart: unless-stopped
+    networks:
+      - default
+      - tracker-nw
+    ports:
+      - "8080:80"
+
+  mongo:
+    image: mongo:6.0.3-focal
+    container_name: tracker-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Hah7TfHHS5XrqLT4Y
+    volumes:
+      - ./mongodb:/data/db
+    networks:
+      - tracker-nw
+
+networks:
+  default:
+    name: vastar-docker-network
+  tracker-nw:
+    name: tracker-network
