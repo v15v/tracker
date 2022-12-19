@@ -6,4 +6,5 @@ ENV TZ="Europe/Moscow"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /app
-ADD . /usr/share/nginx/html
+ADD ./static /usr/share/nginx/html/static
+ADD ./index.html /usr/share/nginx/html
