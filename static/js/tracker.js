@@ -76,7 +76,7 @@ class Habit {
     // Выводит привычку на страницу
     print() {
         // Получаем главный div, внутри которого будем размещать привычки
-        let monthDiv = document.getElementById("month");
+        let monthDiv = document.querySelector("#month");
         // Создаем новый элемент, который добавим в главный div
         let newElement = document.createElement("div");
         // Добавляем этот элемент в главный div месяца
@@ -178,7 +178,7 @@ function addNewHabitHandler(e) {
     // FIXME: переписать для месяца в параметре, а не жестко декабря
     // Если нажата клавиша Ввод
     if (e.keyCode === 13) {
-        let name = document.getElementById("addHabit");
+        let name = document.querySelector("#addHabit");
         let newHabit = new Habit(name.value, [], [], []);
         // Добавляем привычку в список текущего месяца и
         // если успешно добавлена, выводим привычку на страницу
@@ -235,7 +235,7 @@ function setHabitState(e) {
 // Вешаем обработчик события на каждый div дня месяца.
 function addListener() {
     //  Получаем массив всех элементов div. Ориентир - класс "tracker".
-    let elements = document.getElementsByClassName("tracker");
+    let elements = document.querySelectorAll(".tracker");
     // TODO: Переписать вешалку обработчика
     for (let i = 0; i < elements.length; i++) {
         elements[i].onclick = setHabitState;
@@ -248,5 +248,5 @@ window.onload = function () {
     addListener();
 
     // Вешаем обработчик нажатия клавиш в поле input
-    document.getElementById("addHabit").onkeydown = addNewHabitHandler;
+    document.querySelector("#addHabit").onkeydown = addNewHabitHandler;
 }
