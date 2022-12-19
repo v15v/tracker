@@ -17,7 +17,7 @@ class Habit {
         this.planned.push(day - 1);
     }
 
-    // Устанавливаем метку done для указанного дня
+    // Переводим метку из planned в done для указанного дня
     setDayDone(day) {
         // Получаем индекс указанного дня в массиве запланированных
         let dayIndex = this.planned.indexOf(parseInt(day) - 1);
@@ -27,7 +27,7 @@ class Habit {
         this.done.push(day - 1);
     }
 
-    // Устанавливаем метку undone для указанного дня
+    // Переводим метку из done в undone для указанного дня
     setDayUndone(day) {
         // Получаем индекс указанного дня в массиве выполненных
         let dayIndex = this.done.indexOf(parseInt(day) - 1);
@@ -45,7 +45,7 @@ class Habit {
         this.undone.splice(dayIndex, 1);
     }
 
-    // Получаем OuterHTML содержащий все данные для указанной привычки
+    // Генерируем OuterHTML содержащий все данные для указанной привычки
     getOuterHTML() {
         let html = `<div class="columns is-multiline is-mobile">
     <div class="column has-text-right tracker has-text-weight-bold habit-name">
@@ -106,7 +106,7 @@ class Month {
         }
     }
 
-    // Проверяем нет ли данной привычки уже в списке месяца
+    // Проверяет нет ли данной привычки уже в списке месяца
     habitInMonth(habit) {
         if (this.habits.length > 0) {
             for (let i = 0; i < this.habits.length; i++) {
@@ -122,7 +122,7 @@ class Month {
 
     // Выводим все данные по месяцу
     print() {
-        // Перебор привычек в месяце и формирование OuterHTML для каждой из них
+        // Перебор привычек в месяце и вывод их в браузер методом print для привычки
         for (let i = 0; i < this.habits.length; i++) {
             this.habits[i].print();
         }
@@ -130,6 +130,7 @@ class Month {
 
     // Сохраняем состояние месяца в локальное хранилище
     saveToLocalStorage() {
+        // FIXME: Переписать для произвольного месяца
         localStorage.december = JSON.stringify(this);
     }
 
@@ -157,7 +158,7 @@ if (typeof decemberJSONString === "string") {
     december.print();
 }
 
-// Получает имя привычки из свойств объекта, по которому кликнули мышью
+// Получает имя привычки из свойств объекта DOM, по которому кликнули мышью
 function getHabitName(e) {
     return e.target.parentElement.firstElementChild.innerText;
 }
@@ -187,7 +188,7 @@ function addNewHabitHandler(e) {
         // Очищаем значение, чтобы в поле input ничего не сохранялось
         name.value = "";
         // Сохраняем состояние месяца в локальное хранилище
-        // FIXME: переписать для метода класса Month
+        // FIXME: переписать для произвольного месяца
         december.saveToLocalStorage();
         // Вешаем обработчик на все дни трекера, так как добавленная новая
         //  привычка обработчика не имеет.
@@ -233,8 +234,9 @@ function setHabitState(e) {
 
 // Вешаем обработчик события на каждый div дня месяца.
 function addListener() {
-    //  Ориентир - класс "tracker".
+    //  Получаем массив всех элементов div. Ориентир - класс "tracker".
     let elements = document.getElementsByClassName("tracker");
+    // TODO: Переписать вешалку обработчика
     for (let i = 0; i < elements.length; i++) {
         elements[i].onclick = setHabitState;
     }
