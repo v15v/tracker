@@ -52,9 +52,10 @@ func main() {
 	/*
 	   Insert documents
 	*/
+	dec := `{"name":"December","days":31,"habits":[{"name":"hab1","planned":[16],"done":[],"undone":[24]},{"name":"hab2","planned":[10,17,20,24,16,13,14,15],"done":[],"undone":[]},{"name":"hab3","planned":[25,16],"done":[24],"undone":[]},{"name":"hab4","planned":[15],"done":[14],"undone":[]}]}`
 	docs := []interface{}{
 		bson.D{{"title", "march3"}, {"body", "{\"name\":\"March2\",\"days\":31,\"habits\":[{\"name\":\"hab1\",\"planned\":[16],\"done\":[],\"undone\":[24]},{\"name\":\"hab2\",\"planned\":[10,17,20,24,16,13,14,15],\"done\":[],\"undone\":[]},{\"name\":\"hab3\",\"planned\":[25,16],\"done\":[24],\"undone\":[]},{\"name\":\"hab4\",\"planned\":[15],\"done\":[14],\"undone\":[]}]}"}},
-		bson.D{{"title", "april3"}, {"body", "{\"name\":\"April2\",\"days\":31,\"habits\":[{\"name\":\"hab1\",\"planned\":[16],\"done\":[],\"undone\":[24]},{\"name\":\"hab2\",\"planned\":[10,17,20,24,16,13,14,15],\"done\":[],\"undone\":[]},{\"name\":\"hab3\",\"planned\":[2,6],\"done\":[4],\"undone\":[]},{\"name\":\"hab4\",\"planned\":[5],\"done\":[10],\"undone\":[]}]}"}},
+		bson.D{{"title", "dec"}, {"body", dec}},
 	}
 
 	res, insertErr := collection.InsertMany(ctx, docs)
@@ -78,4 +79,9 @@ func main() {
 	}
 	fmt.Println(months)
 
+	filter := bson.D{{"title", "dec"}}
+	update := bson.D{{"$set", bson.D{{"body", "{}"}}}}
+	result, err := collection.UpdateOne(context.TODO(), filter, update)
+	fmt.Printf("Documents matched: %v\n", result.MatchedCount)
+	fmt.Printf("Documents updated: %v\n", result.ModifiedCount)
 }
