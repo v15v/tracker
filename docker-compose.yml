@@ -1,15 +1,24 @@
 version: "3.7"
 
 services:
-  caddy:
-    image: tracker:latest
-    container_name: tracker
+  client:
+    image: tracker-client:latest
+    container_name: tracker-client
     restart: unless-stopped
     networks:
       - default
       - tracker-nw
     ports:
       - "8080:80"
+
+  server:
+    image: tracker-server:latest
+    container_name: tracker-server
+    restart: unless-stopped
+    networks:
+      - tracker-nw
+    ports:
+      - "8081:8081"
 
   mongo:
     image: mongo:6.0.3-focal
