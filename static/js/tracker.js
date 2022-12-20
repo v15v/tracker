@@ -1,5 +1,3 @@
-// Класс для отдельной привычки
-// name - наименование,
 // planned - массив запланированных дней,
 // done - те дни, когда привычка выполнялась,
 // undone - те дни, когда привычка была запланирована, но не выполнена.
@@ -150,6 +148,7 @@ if (typeof decemberJSONString === "string") {
     // и добавляем ее в наш месяц.
     // Если просто передать все эти привычки нашему месяцу, их тип не будет Habit,
     // а следовательно они не будут поддерживать методов нашего класса Habit.
+    // TODO: Спросить верно ли я понял этот момент?
     decemberJSON.habits.forEach(habit => {
         let habitToRestore = new Habit(habit.name, habit.planned, habit.done, habit.undone);
         december.addHabit(habitToRestore);
@@ -236,10 +235,9 @@ function setHabitState(e) {
 function addListener() {
     //  Получаем массив всех элементов div. Ориентир - класс "tracker".
     let elements = document.querySelectorAll(".tracker");
-    // TODO: Переписать вешалку обработчика
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].onclick = setHabitState;
-    }
+    elements.forEach(el => {
+        el.addEventListener("click", setHabitState, false);
+    });
 }
 
 
