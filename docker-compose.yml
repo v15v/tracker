@@ -30,7 +30,12 @@ services:
     volumes:
       - ./mongodb:/data/db
     networks:
+      # FIXME: Временно подключаю в общую сеть. Для тестов.
+      - default
       - tracker-nw
+    # FIXME: Временно открываю порт. Для тестов
+    ports:
+      - "27017:27017"
 
 networks:
   default:
