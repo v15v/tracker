@@ -176,7 +176,6 @@ function getHabitByName(month, habitName) {
 function addNewHabitHandler(e) {
     // FIXME: переписать для месяца в параметре, а не жестко декабря
     // Если нажата клавиша Ввод
-    // if (e.keyCode === 13) {
     if (e.key === "Enter") {
         let name = document.querySelector("#addHabit");
         let newHabit = new Habit(name.value, [], [], []);
