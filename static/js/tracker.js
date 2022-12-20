@@ -176,7 +176,8 @@ function getHabitByName(month, habitName) {
 function addNewHabitHandler(e) {
     // FIXME: переписать для месяца в параметре, а не жестко декабря
     // Если нажата клавиша Ввод
-    if (e.keyCode === 13) {
+    // if (e.keyCode === 13) {
+    if (e.key === "Enter") {
         let name = document.querySelector("#addHabit");
         let newHabit = new Habit(name.value, [], [], []);
         // Добавляем привычку в список текущего месяца и
@@ -206,19 +207,15 @@ function setHabitState(e) {
     let habit = getHabitByName(december, habitName);
     // Получаем день, по которому кликнули мышью
     let targetDay = e.target.innerText;
-    // Преобразуем строку классов в массив, для точного поиска вхождения класса
-    let classes = e.target.getAttribute("class").split(" ");
-    if (classes.includes("planned")) {
-        e.target.classList.remove("planned");
-        e.target.classList.add("done");
+    if (e.target.classList.contains("planned")) {
+        e.target.classList.replace("planned", "done");
         // Добавляем текущий день в массив выполненных
         habit.setDayDone(targetDay);
-    } else if (classes.includes("done")) {
-        e.target.classList.remove("done");
-        e.target.classList.add("undone");
+    } else if (e.target.classList.contains("done")) {
+        e.target.classList.replace("done", "undone");
         // Добавляем текущий день в массив невыполненных
         habit.setDayUndone(targetDay);
-    } else if (classes.includes("undone")) {
+    } else if (e.target.classList.contains("undone")) {
         e.target.classList.remove("undone");
         // Удаляем текущий день из массива пропущенных
         habit.setDayNormal(targetDay);
@@ -246,5 +243,5 @@ window.onload = function () {
     addListener();
 
     // Вешаем обработчик нажатия клавиш в поле input
-    document.querySelector("#addHabit").onkeydown = addNewHabitHandler;
+    document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false);
 }
