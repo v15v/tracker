@@ -190,9 +190,6 @@ function addNewHabitHandler(e) {
         // Сохраняем состояние месяца в локальное хранилище
         // FIXME: переписать для произвольного месяца
         december.saveToLocalStorage();
-        // Вешаем обработчик на все дни трекера, так как добавленная новая
-        //  привычка обработчика не имеет.
-        addListener();
     }
 }
 
@@ -201,47 +198,57 @@ function addNewHabitHandler(e) {
 //  Цикл установки идет по кругу: planned -> done -> undone -> normal
 // FIXME: переписать для класса
 function setHabitState(e) {
-    // Получаем имя привычки из элемента DOM
-    let habitName = getHabitName(e);
-    // Получаем объект привычки по имени
-    let habit = getHabitByName(december, habitName);
-    // Получаем день, по которому кликнули мышью
-    let targetDay = e.target.innerText;
-    if (e.target.classList.contains("planned")) {
-        e.target.classList.replace("planned", "done");
-        // Добавляем текущий день в массив выполненных
-        habit.setDayDone(targetDay);
-    } else if (e.target.classList.contains("done")) {
-        e.target.classList.replace("done", "undone");
-        // Добавляем текущий день в массив невыполненных
-        habit.setDayUndone(targetDay);
-    } else if (e.target.classList.contains("undone")) {
-        e.target.classList.remove("undone");
-        // Удаляем текущий день из массива пропущенных
-        habit.setDayNormal(targetDay);
-    } else {
-        e.target.classList.add("planned");
-        // Добавляем текущий день в массив запланированных
-        habit.setDayPlanned(targetDay);
+    // Так как слушатель вешается на родительский элемент,
+    // мы проверяем, что событие вызвано не этим самым родительским элементом,
+    // а его потомком.
+    if (e.target != e.currentTarget) {
+        // Так же нужно проигнорировать событие,
+        // если его оно сработало на перечисленных элементах.
+        // Так как они являются потомками нашего #month, но не являются днями месяца.
+        if (e.target.classList.contains("columns") ||
+            e.target.classList.contains("title") ||
+            e.target.classList.contains("habit-name")) {
+            // Выход без каких-либо действий
+            return;
+        } else {
+            // Получаем имя привычки из элемента DOM
+            let habitName = getHabitName(e);
+            // Получаем объект привычки по имени
+            let habit = getHabitByName(december, habitName);
+            // Получаем день, по которому кликнули мышью
+            let targetDay = e.target.innerText;
+            if (e.target.classList.contains("planned")) {
+                e.target.classList.replace("planned", "done");
+                // Добавляем текущий день в массив выполненных
+                habit.setDayDone(targetDay);
+            } else if (e.target.classList.contains("done")) {
+                e.target.classList.replace("done", "undone");
+                // Добавляем текущий день в массив невыполненных
+                habit.setDayUndone(targetDay);
+            } else if (e.target.classList.contains("undone")) {
+                e.target.classList.remove("undone");
+                // Удаляем текущий день из массива пропущенных
+                habit.setDayNormal(targetDay);
+            } else {
+                e.target.classList.add("planned");
+                // Добавляем текущий день в массив запланированных
+                habit.setDayPlanned(targetDay);
+            }
+            // Сохраняем состояние месяца в локальное хранилище
+            december.saveToLocalStorage();
+        }
     }
-    // Сохраняем состояние месяца в локальное хранилище
-    december.saveToLocalStorage();
+    // Останавливаем распространение события вверх (поднятие);
+    e.stopPropagation();
 }
 
-// Вешаем обработчик события на каждый div дня месяца.
-function addListener() {
-    //  Получаем массив всех элементов div. Ориентир - класс "tracker".
-    let elements = document.querySelectorAll(".tracker");
-    elements.forEach(el => {
-        el.addEventListener("click", setHabitState, false);
-    });
-}
-
-
-window.onload = function () {
-    // Вешаем обработчик на все дни в трекере
-    addListener();
+function init() {
+    // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
+    let theMonthParent = document.querySelector("#month");
+    theMonthParent.addEventListener("click", setHabitState, false);
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false);
 }
+
+document.addEventListener("DOMContentLoaded", init, false);
