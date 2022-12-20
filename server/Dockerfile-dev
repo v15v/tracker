@@ -8,5 +8,5 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /app
 COPY tracker-server /app/tracker-server
 
-#ENTRYPOINT ["./tracker-server"]
-ENTRYPOINT ["/bin/sh", "-ec", "sleep 10000"]
+ENTRYPOINT ["./tracker-server"]
+#ENTRYPOINT ["/bin/sh", "-ec", "sleep 10000"]

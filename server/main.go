@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -84,4 +85,12 @@ func main() {
 	result, err := collection.UpdateOne(context.TODO(), filter, update)
 	fmt.Printf("Documents matched: %v\n", result.MatchedCount)
 	fmt.Printf("Documents updated: %v\n", result.ModifiedCount)
+
+	// handle route using handler function
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Welcome to new server!")
+	})
+
+	// listen to port
+	http.ListenAndServe(":8081", nil)
 }
