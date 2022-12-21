@@ -40,3 +40,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.delete-habit {
+    margin: 0.2em;
+    padding: 0.25em 0.2em 0.1em 0.2em;
+    height: 1.9em;
+    width: 1.9em;
+}

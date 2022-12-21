@@ -95,6 +95,8 @@ class Habit {
             }
             html = html + `<div class="${classes}">${dayTwoDigit}</div>`
         }
+        // Добавляем кнопку "Удалить"
+        html = html + `<div class="column is-narrow delete-habit"><button class="delete is-small"></button></div>`
         // Закрываем основной div для привычки
         html = html + "</div>\n"
 
@@ -136,13 +138,12 @@ class Month {
     }
 
     // Удаляем привычку из отслеживания в этом месяце
-    removeHabit(habitName) {
+    deleteHabit(habitName) {
         // Получаем индекс привычки в массиве привычек
-        let index = this.habits.findIndex(h => h.name === habitName)
+        const index = this.habits.findIndex(h => h.name === habitName)
         // Если индекс найден, удаляем привычку и сохраняем месяц
         if (index > -1) {
             this.habits.splice(index, 1)
-            deleteHabitDOM(habitName)
             this.saveToLocalStorage()
         } else {
             console.warn("Такой привычки нет в списке")
@@ -209,12 +210,11 @@ if (typeof decemberJSONString === "string") {
 
 // Получает имя привычки из свойств объекта DOM, по которому кликнули мышью
 function getHabitName(e) {
-    return e.target.parentElement.firstElementChild.innerText
+    return e.target.parentNode.firstElementChild.innerText
 }
 
 // Получаем объект привычки по ее имени
-function getHabitByName(month, habitName) {
-    // Возвращает массив из одного элемента. Мы берем первый,
+function getHabitByName(month, habitName) { // Возвращает массив из одного элемента. Мы берем первый,
     //  чтобы получить сам объект
     return month.habits.filter(obj => obj.name === habitName)[0]
 }
@@ -261,6 +261,8 @@ function setHabitState(e) {
         // Так как они являются потомками нашего #month, но не являются днями месяца.
         if (e.target.classList.contains("columns") ||
             e.target.classList.contains("title") ||
+            e.target.classList.contains("delete-habit") ||
+            e.target.classList.contains("delete") ||
             e.target.classList.contains("habit-name")) {
             // Выход без каких-либо действий
             return
@@ -296,17 +298,26 @@ function setHabitState(e) {
     e.stopPropagation()
 }
 
-// Удаляет элемент DOM, содержащий указанную привычку
-function deleteHabitDOM(habiName) {
-    // Получаем NodeList всех дивов с наименованиями привычек
-    let habits = document.querySelectorAll("div .habit-name")
-    // Перебираем NodeList для поиска указанной привычки
-    for (const habit of habits) {
-        // Если нашли нужную, удаляем её родителя, так как он содержит div наименования
-        // и все дни этой привычки
-        if (habit.innerText === habiName) {
-            habit.parentElement.remove()
+// Удаляет указанную привычку
+// TODO: Переписать для произвольного месяца
+// TODO: Запрашивать подтверждение, чтобы исключить случайное удаление!!!
+function deleteHabit(e) {
+    // Если клик был по кнопке delete нужно подняться по дереву выше,
+    // чтобы найти наименование привычки
+    if (e.target.classList.contains("delete")) {
+        let habitName = e.target.parentNode.parentNode.firstElementChild.innerText
+        // Получаем NodeList всех дивов с наименованиями привычек
+        const habits = document.querySelectorAll("div .habit-name")
+        // Перебираем NodeList для поиска указанной привычки
+        for (const habit of habits) {
+            // Если нашли нужную, удаляем её родителя из DOM,
+            // так как он содержит div наименования и все дни этой привычки.
+            if (habit.innerText === habitName) {
+                habit.parentElement.remove()
+            }
         }
+        // Удаляем привычку из списка в текущем месяце в локальном хранилище
+        december.deleteHabit(habitName)
     }
 }
 
@@ -314,11 +325,13 @@ function init() {
     // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
     let theMonthParent = document.querySelector("#month")
     theMonthParent.addEventListener("click", setHabitState, false)
+    theMonthParent.addEventListener("click", deleteHabit, false)
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
 
-    // december.removeHabit("test2")
+    // document.querySelectorAll("button .delete")
+    // , deletHabitDOM, false)
 }
 
 document.addEventListener("DOMContentLoaded", init, false)
