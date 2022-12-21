@@ -2,11 +2,28 @@
 // done - те дни, когда привычка выполнялась,
 // undone - те дни, когда привычка была запланирована, но не выполнена.
 class Habit {
-    constructor(name, planned, done, undone) {
-        this.name = name;
-        this.planned = planned;
-        this.done = done;
-        this.undone = undone;
+    constructor(habit) {
+        if (!habit.name) {
+            console.error("Не указано наименование привычки!");
+            return;
+        } else {
+            this.name = habit.name;
+        }
+        if (!habit.planned) {
+            this.planned = [];
+        } else {
+            this.planned = habit.planned;
+        }
+        if (!habit.done) {
+            this.done = [];
+        } else {
+            this.done = habit.done;
+        }
+        if (!habit.undone) {
+            this.undone = [];
+        } else {
+            this.undone = habit.undone;
+        }
     }
 
     // Устанавливаем метку planned для указанного дня.
@@ -85,11 +102,11 @@ class Habit {
 }
 
 class Month {
-    constructor(name, days, habits) {
-        this.name = name;
+    constructor(month) {
+        this.name = month.name;
         // Количество дней в месяце
-        this.days = days;
-        this.habits = habits;
+        this.days = month.days;
+        this.habits = month.habits;
     }
 
     // Добавляем привычку для отслеживания в этом месяце
@@ -135,7 +152,7 @@ class Month {
 }
 
 // FIXME: Переписать для произвольного месяца
-let december = new Month("December", 31, []);
+let december = new Month({name: "December", days: 31, habits: []});
 // Пробуем загрузить данные из локального хранилища
 let decemberJSONString = localStorage.december;
 // Количество дней в текущем месяце
@@ -150,7 +167,12 @@ if (typeof decemberJSONString === "string") {
     // а следовательно они не будут поддерживать методов нашего класса Habit.
     // TODO: Спросить верно ли я понял этот момент?
     decemberJSON.habits.forEach(habit => {
-        let habitToRestore = new Habit(habit.name, habit.planned, habit.done, habit.undone);
+        let habitToRestore = new Habit({
+            name: habit.name,
+            planned: habit.planned,
+            done: habit.done,
+            undone: habit.undone
+        });
         december.addHabit(habitToRestore);
     });
     // Выводим в браузер все отслеживаемые привычки текущего месяца
@@ -178,7 +200,12 @@ function addNewHabitHandler(e) {
     // Если нажата клавиша Ввод
     if (e.key === "Enter") {
         let name = document.querySelector("#addHabit");
-        let newHabit = new Habit(name.value, [], [], []);
+        let newHabit = new Habit({
+            name: name.value,
+            planned: [],
+            done: [],
+            undone: []
+        });
         // Добавляем привычку в список текущего месяца и
         // если успешно добавлена, выводим привычку на страницу
         if (december.addHabit(newHabit)) {
