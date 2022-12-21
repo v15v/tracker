@@ -4,60 +4,60 @@
 class Habit {
     constructor(habit) {
         if (!habit.name) {
-            console.error("Не указано наименование привычки!");
-            return;
+            console.error("Не указано наименование привычки!")
+            return
         } else {
-            this.name = habit.name;
+            this.name = habit.name
         }
         if (!habit.planned) {
-            this.planned = [];
+            this.planned = []
         } else {
-            this.planned = habit.planned;
+            this.planned = habit.planned
         }
         if (!habit.done) {
-            this.done = [];
+            this.done = []
         } else {
-            this.done = habit.done;
+            this.done = habit.done
         }
         if (!habit.undone) {
-            this.undone = [];
+            this.undone = []
         } else {
-            this.undone = habit.undone;
+            this.undone = habit.undone
         }
     }
 
     // Устанавливаем метку planned для указанного дня.
     // Так как в массиве индексы от 0, вычитаем из указанного дня 1.
     setDayPlanned(day) {
-        this.planned.push(day - 1);
+        this.planned.push(day - 1)
     }
 
     // Переводим метку из planned в done для указанного дня
     setDayDone(day) {
         // Получаем индекс указанного дня в массиве запланированных
-        let dayIndex = this.planned.indexOf(parseInt(day) - 1);
+        let dayIndex = this.planned.indexOf(parseInt(day) - 1)
         // Удаляем текущий день из массива запланированных
-        this.planned.splice(dayIndex, 1);
+        this.planned.splice(dayIndex, 1)
         // Добавляем текущий день в массив выполненных
-        this.done.push(day - 1);
+        this.done.push(day - 1)
     }
 
     // Переводим метку из done в undone для указанного дня
     setDayUndone(day) {
         // Получаем индекс указанного дня в массиве выполненных
-        let dayIndex = this.done.indexOf(parseInt(day) - 1);
+        let dayIndex = this.done.indexOf(parseInt(day) - 1)
         // Удаляем текущий день из массива выполненных
-        this.done.splice(dayIndex, 1);
+        this.done.splice(dayIndex, 1)
         // Добавляем текущий день в массив невыполненных
-        this.undone.push(day - 1);
+        this.undone.push(day - 1)
     }
 
     // Снимаем все метки для указанного дня
     setDayNormal(day) {
         // Получаем индекс указанного дня в массиве невыполненных
-        let dayIndex = this.undone.indexOf(parseInt(day) - 1);
+        let dayIndex = this.undone.indexOf(parseInt(day) - 1)
         // Удаляем текущий день из массива невыполненных
-        this.undone.splice(dayIndex, 1);
+        this.undone.splice(dayIndex, 1)
     }
 
     // Генерируем OuterHTML содержащий все данные для указанной привычки
@@ -65,48 +65,48 @@ class Habit {
         let html = `<div class="columns is-multiline is-mobile">
     <div class="column has-text-right tracker has-text-weight-bold habit-name">
         ${this.name} 
-    </div>\n`;
+    </div>\n`
         for (let i = 0; i < monthDays; i++) {
-            let classes = "column is-narrow tracker";
+            let classes = "column is-narrow tracker"
             // День месяца с двумя знаками. Например, 01.
-            let dayTwoDigit = (i + 1).toString().padStart(2, "0");
+            let dayTwoDigit = (i + 1).toString().padStart(2, "0")
             // Проверяем наличие указанного дня в запланированных, выполненных или пропущенных
             //  и добавляем необходимый класс
             if (this.planned.includes(i)) {
-                classes = classes + " planned";
+                classes = classes + " planned"
             } else if (this.done.includes(i)) {
-                classes = classes + " done";
+                classes = classes + " done"
             } else if (this.undone.includes(i)) {
-                classes = classes + " undone";
+                classes = classes + " undone"
             }
-            html = html + `<div class="${classes}">${dayTwoDigit}</div>`;
+            html = html + `<div class="${classes}">${dayTwoDigit}</div>`
         }
         // Закрываем основной div для привычки
-        html = html + "</div>\n";
+        html = html + "</div>\n"
 
-        return html;
+        return html
     }
 
 
     // Выводит привычку на страницу
     print() {
         // Получаем главный div, внутри которого будем размещать привычки
-        let monthDiv = document.querySelector("#month");
+        let monthDiv = document.querySelector("#month")
         // Создаем новый элемент, который добавим в главный div
-        let newElement = document.createElement("div");
+        let newElement = document.createElement("div")
         // Добавляем этот элемент в главный div месяца
-        monthDiv.appendChild(newElement);
+        monthDiv.appendChild(newElement)
         // Вставляем сгенерированную размету для привычки в этот добавленный элемент
-        newElement.outerHTML = this.getOuterHTML();
+        newElement.outerHTML = this.getOuterHTML()
     }
 }
 
 class Month {
     constructor(month) {
-        this.name = month.name;
+        this.name = month.name
         // Количество дней в месяце
-        this.days = month.days;
-        this.habits = month.habits;
+        this.days = month.days
+        this.habits = month.habits
     }
 
     // Добавляем привычку для отслеживания в этом месяце
@@ -114,10 +114,10 @@ class Month {
         // Проверяем нет ли ее уже в списке месяца
         if (this.habitInMonth(habit)) {
             // TODO: выводить сообщение пользователю о том, что такая привычка уже есть в списке
-            return false;
+            return false
         } else {
-            this.habits.push(habit);
-            return true;
+            this.habits.push(habit)
+            return true
         }
     }
 
@@ -126,12 +126,12 @@ class Month {
         if (this.habits.length > 0) {
             for (let i = 0; i < this.habits.length; i++) {
                 if (this.habits[i].name === habit.name) {
-                    return true;
+                    return true
                 }
             }
-            return false;
+            return false
         } else {
-            return false;
+            return false
         }
     }
 
@@ -139,28 +139,28 @@ class Month {
     print() {
         // Перебор привычек в месяце и вывод их в браузер методом print для привычки
         for (let i = 0; i < this.habits.length; i++) {
-            this.habits[i].print();
+            this.habits[i].print()
         }
     }
 
     // Сохраняем состояние месяца в локальное хранилище
     saveToLocalStorage() {
         // FIXME: Переписать для произвольного месяца
-        localStorage.december = JSON.stringify(this);
+        localStorage.december = JSON.stringify(this)
     }
 
 }
 
 // FIXME: Переписать для произвольного месяца
-let december = new Month({name: "December", days: 31, habits: []});
+let december = new Month({name: "December", days: 31, habits: []})
 // Пробуем загрузить данные из локального хранилища
-let decemberJSONString = localStorage.december;
+let decemberJSONString = localStorage.december
 // Количество дней в текущем месяце
-const monthDays = december.days;
+const monthDays = december.days
 // Если из локального хранилища получены данные
 if (typeof decemberJSONString === "string") {
     // Преобразуем строку JSON в объект
-    decemberJSON = JSON.parse(decemberJSONString);
+    decemberJSON = JSON.parse(decemberJSONString)
     // Для каждой привычки из хранилища генерируем новую привычку типа Habit
     // и добавляем ее в наш месяц.
     // Если просто передать все эти привычки нашему месяцу, их тип не будет Habit,
@@ -172,23 +172,23 @@ if (typeof decemberJSONString === "string") {
             planned: habit.planned,
             done: habit.done,
             undone: habit.undone
-        });
-        december.addHabit(habitToRestore);
-    });
+        })
+        december.addHabit(habitToRestore)
+    })
     // Выводим в браузер все отслеживаемые привычки текущего месяца
-    december.print();
+    december.print()
 }
 
 // Получает имя привычки из свойств объекта DOM, по которому кликнули мышью
 function getHabitName(e) {
-    return e.target.parentElement.firstElementChild.innerText;
+    return e.target.parentElement.firstElementChild.innerText
 }
 
 // Получаем объект привычки по ее имени
 function getHabitByName(month, habitName) {
     // Возвращает массив из одного элемента. Мы берем первый,
     //  чтобы получить сам объект
-    return month.habits.filter(obj => obj.name === habitName)[0];
+    return month.habits.filter(obj => obj.name === habitName)[0]
 }
 
 // Добавляет привычку в список месяца.
@@ -199,23 +199,23 @@ function addNewHabitHandler(e) {
     // FIXME: переписать для месяца в параметре, а не жестко декабря
     // Если нажата клавиша Ввод
     if (e.key === "Enter") {
-        let name = document.querySelector("#addHabit");
+        let name = document.querySelector("#addHabit")
         let newHabit = new Habit({
             name: name.value,
             planned: [],
             done: [],
             undone: []
-        });
+        })
         // Добавляем привычку в список текущего месяца и
         // если успешно добавлена, выводим привычку на страницу
         if (december.addHabit(newHabit)) {
-            newHabit.print();
+            newHabit.print()
         }
         // Очищаем значение, чтобы в поле input ничего не сохранялось
-        name.value = "";
+        name.value = ""
         // Сохраняем состояние месяца в локальное хранилище
         // FIXME: переписать для произвольного месяца
-        december.saveToLocalStorage();
+        december.saveToLocalStorage()
     }
 }
 
@@ -235,46 +235,46 @@ function setHabitState(e) {
             e.target.classList.contains("title") ||
             e.target.classList.contains("habit-name")) {
             // Выход без каких-либо действий
-            return;
+            return
         } else {
             // Получаем имя привычки из элемента DOM
-            let habitName = getHabitName(e);
+            let habitName = getHabitName(e)
             // Получаем объект привычки по имени
-            let habit = getHabitByName(december, habitName);
+            let habit = getHabitByName(december, habitName)
             // Получаем день, по которому кликнули мышью
-            let targetDay = e.target.innerText;
+            let targetDay = e.target.innerText
             if (e.target.classList.contains("planned")) {
-                e.target.classList.replace("planned", "done");
+                e.target.classList.replace("planned", "done")
                 // Добавляем текущий день в массив выполненных
-                habit.setDayDone(targetDay);
+                habit.setDayDone(targetDay)
             } else if (e.target.classList.contains("done")) {
-                e.target.classList.replace("done", "undone");
+                e.target.classList.replace("done", "undone")
                 // Добавляем текущий день в массив невыполненных
-                habit.setDayUndone(targetDay);
+                habit.setDayUndone(targetDay)
             } else if (e.target.classList.contains("undone")) {
-                e.target.classList.remove("undone");
+                e.target.classList.remove("undone")
                 // Удаляем текущий день из массива пропущенных
-                habit.setDayNormal(targetDay);
+                habit.setDayNormal(targetDay)
             } else {
-                e.target.classList.add("planned");
+                e.target.classList.add("planned")
                 // Добавляем текущий день в массив запланированных
-                habit.setDayPlanned(targetDay);
+                habit.setDayPlanned(targetDay)
             }
             // Сохраняем состояние месяца в локальное хранилище
-            december.saveToLocalStorage();
+            december.saveToLocalStorage()
         }
     }
-    // Останавливаем распространение события вверх (поднятие);
-    e.stopPropagation();
+    // Останавливаем распространение события вверх (поднятие)
+    e.stopPropagation()
 }
 
 function init() {
     // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
-    let theMonthParent = document.querySelector("#month");
-    theMonthParent.addEventListener("click", setHabitState, false);
+    let theMonthParent = document.querySelector("#month")
+    theMonthParent.addEventListener("click", setHabitState, false)
 
     // Вешаем обработчик нажатия клавиш в поле input
-    document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false);
+    document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
 }
 
-document.addEventListener("DOMContentLoaded", init, false);
+document.addEventListener("DOMContentLoaded", init, false)
