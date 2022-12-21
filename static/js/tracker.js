@@ -76,8 +76,8 @@ class Habit {
 
     // Генерируем OuterHTML содержащий все данные для указанной привычки
     getOuterHTML() {
-        let html = `<div class="columns is-multiline is-mobile">
-    <div class="column has-text-right tracker has-text-weight-bold habit-name">
+        let html = `<div class="columns is-multiline is-mobile no-listener">
+    <div class="column has-text-right tracker has-text-weight-bold habit-name no-listener">
         ${this.name} 
     </div>\n`
         for (let i = 0; i < monthDays; i++) {
@@ -95,8 +95,24 @@ class Habit {
             }
             html = html + `<div class="${classes}">${dayTwoDigit}</div>`
         }
+        // Добавляем кнопку "Редактировать"
+        html = html + `
+        <div class="column is-narrow habit-icons no-listener">
+            <div class="icon-text no-listener">
+              <span class="icon has-text-info no-listener">
+                <i class="fas fa-edit habit-edit no-listener"></i>
+              </span>
+            </div>
+        </div>`
         // Добавляем кнопку "Удалить"
-        html = html + `<div class="column is-narrow delete-habit"><button class="delete is-small"></button></div>`
+        html = html + `
+        <div class="column is-narrow habit-icons no-listener">
+            <div class="icon-text no-listener">
+              <span class="icon has-text-info no-listener">
+                <i class="fas fa-trash habit-delete no-listener"></i>
+              </span>
+            </div>
+        </div>`
         // Закрываем основной div для привычки
         html = html + "</div>\n"
 
@@ -257,13 +273,10 @@ function setHabitState(e) {
     // а его потомком.
     if (e.target != e.currentTarget) {
         // Так же нужно проигнорировать событие,
-        // если его оно сработало на перечисленных элементах.
+        // если его оно сработало на элементах c перечисленными классами.
         // Так как они являются потомками нашего #month, но не являются днями месяца.
-        if (e.target.classList.contains("columns") ||
-            e.target.classList.contains("title") ||
-            e.target.classList.contains("delete-habit") ||
-            e.target.classList.contains("delete") ||
-            e.target.classList.contains("habit-name")) {
+        // FIXME: Переписать в цикл
+        if (e.target.classList.contains("no-listener")) {
             // Выход без каких-либо действий
             return
         } else {
@@ -304,8 +317,8 @@ function setHabitState(e) {
 function deleteHabit(e) {
     // Если клик был по кнопке delete нужно подняться по дереву выше,
     // чтобы найти наименование привычки
-    if (e.target.classList.contains("delete")) {
-        let habitName = e.target.parentNode.parentNode.firstElementChild.innerText
+    if (e.target.classList.contains("habit-delete")) {
+        let habitName = e.target.parentNode.parentNode.parentNode.parentNode.firstElementChild.innerText
         // Получаем NodeList всех дивов с наименованиями привычек
         const habits = document.querySelectorAll("div .habit-name")
         // Перебираем NodeList для поиска указанной привычки
