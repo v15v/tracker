@@ -135,6 +135,20 @@ class Month {
         }
     }
 
+    // Удаляем привычку из отслеживания в этом месяце
+    removeHabit(habitName) {
+        // Получаем индекс привычки в массиве привычек
+        let index = this.habits.findIndex(h => h.name === habitName)
+        // Если индекс найден, удаляем привычку и сохраняем месяц
+        if (index > -1) {
+            this.habits.splice(index, 1)
+            deleteHabitDOM(habitName)
+            this.saveToLocalStorage()
+        } else {
+            console.warn("Такой привычки нет в списке")
+        }
+    }
+
     // Проверяет нет ли данной привычки уже в списке месяца
     habitInMonth(habit) {
         if (this.habits.length > 0) {
@@ -282,6 +296,20 @@ function setHabitState(e) {
     e.stopPropagation()
 }
 
+// Удаляет элемент DOM, содержащий указанную привычку
+function deleteHabitDOM(habiName) {
+    // Получаем NodeList всех дивов с наименованиями привычек
+    let habits = document.querySelectorAll("div .habit-name")
+    // Перебираем NodeList для поиска указанной привычки
+    for (const habit of habits) {
+        // Если нашли нужную, удаляем её родителя, так как он содержит div наименования
+        // и все дни этой привычки
+        if (habit.innerText === habiName) {
+            habit.parentElement.remove()
+        }
+    }
+}
+
 function init() {
     // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
     let theMonthParent = document.querySelector("#month")
@@ -289,6 +317,8 @@ function init() {
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
+
+    // december.removeHabit("test2")
 }
 
 document.addEventListener("DOMContentLoaded", init, false)
