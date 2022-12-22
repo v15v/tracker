@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  client:
+    image: tracker-client:latest
+    container_name: tracker-client
+    restart: unless-stopped
+    networks:
+      - default
+      - tracker-nw
+    ports:
+      - "8080:80"
+
+#  server:
+#    image: tracker-server:latest
+#    container_name: tracker-server
+#    restart: unless-stopped
+#    networks:
+#      - tracker-nw
+#    ports:
+#      - "8081:8081"
+#
+#  mongo:
+#    image: mongo:6.0.3-focal
+#    container_name: tracker-mongodb
+#    restart: unless-stopped
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: Hah7TfHHS5XrqLT4Y
+#    volumes:
+#      - ./mongodb:/data/db
+#    networks:
+#      # FIXME: Временно подключаю в общую сеть. Для тестов.
+#      - default
+#      - tracker-nw
+#    # FIXME: Временно открываю порт. Для тестов
+#    ports:
+#      - "27017:27017"
+
+networks:
+  default:
+    name: vastar-docker-network
+  tracker-nw:
+    name: tracker-network

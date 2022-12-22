@@ -18,12 +18,16 @@ build_server_dev:
 	# Для разработки использую тег latest
 	cd server && docker build -t tracker-server:latest -f Dockerfile-dev .
 
-.PHONY: docker-compose
-docker-compose: build_client #build_server_dev
+.PHONY: docker-compose-prod
+docker-compose-prod: build_client build_server_dev
 	docker-compose up
+
+.PHONY: docker-compose-dev
+docker-compose-dev: build_client
+	docker-compose -f docker-compose-dev.yml up
 
 .PHONY: go
 go:
 	go run ./server/main.go
 
-.DEFAULT_GOAL := docker-compose
+.DEFAULT_GOAL := docker-compose-dev
