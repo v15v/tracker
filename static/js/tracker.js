@@ -343,9 +343,6 @@ function init() {
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
-
-    // document.querySelectorAll("button .delete")
-    // , deletHabitDOM, false)
 }
 
 document.addEventListener("DOMContentLoaded", init, false)
