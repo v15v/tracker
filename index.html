@@ -6,8 +6,10 @@
     <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
     <link rel="stylesheet" href="static/css/my_bulma.css">
     <link rel="stylesheet" href="static/css/tracker.css">
-    <link href="static/css/fontawesome-free-6.2.1-web/css/fontawesome.css" rel="stylesheet">
-    <link href="static/css/fontawesome-free-6.2.1-web/css/solid.css" rel="stylesheet">
+    <link href="static/css/fontawesome-free-6.2.1-web/css/fontawesome.css"
+          rel="stylesheet">
+    <link href="static/css/fontawesome-free-6.2.1-web/css/solid.css"
+          rel="stylesheet">
 </head>
 <body>
 
@@ -24,24 +26,37 @@
     </div>
 </section>
 <section class="section">
+    <div class="container block is-widescreen">
+        <div class="tile is-ancestor">
+            <div class="tile">
+                <div class="select block">
+                    <select id="month-name">
+                        <option>Декабрь</option>
+                    </select>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="control block container is-widescreen">
+                    <input id="addHabit" class="input has-text-right" type="text"
+                           placeholder="Добавить привычку">
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="month" class="container is-widescreen">
-        <h1 class="title no-listener">December</h1>
     </div>
     <!--Добавляем модальное окно для редактирования имени привычки-->
     <div class="modal">
         <div class="modal-background"></div>
         <div class="modal-content">
             <!-- Any other Bulma elements you want -->
-            <input class="input" type="text" placeholder="Введите имя привычки" id="habitNewName" value="">
+            <input class="input" type="text" placeholder="Введите имя привычки"
+                   id="habitNewName" value="">
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
 </section>
 <section class="section">
-    <div class="control">
-        <input id="addHabit" class="input" type="text"
-               placeholder="Добавить привычку">
-    </div>
 </section>
 
 <script src="static/js/tracker.js"></script>
