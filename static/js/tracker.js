@@ -316,7 +316,7 @@ function setHabitState(e) {
 // TODO: Переписать для произвольного месяца
 // TODO: Запрашивать подтверждение, чтобы исключить случайное удаление!!!
 function deleteHabit(e) {
-    // Если клик был по кнопке delete нужно подняться по дереву выше,
+    // Клик был по иконке delete - нужно подняться по дереву выше,
     // чтобы найти наименование привычки
     if (e.target.classList.contains("habit-delete")) {
         let habitName = e.target.parentNode.parentNode.parentNode.parentNode.firstElementChild.innerText
@@ -335,11 +335,65 @@ function deleteHabit(e) {
     }
 }
 
+// Редактирует указанную привычку
+// TODO: Переписать для произвольного месяца
+function editHabit(e) {
+    // Клик был по иконке edit - нужно подняться по дереву выше,
+    // чтобы найти наименование привычки
+    if (e.target.classList.contains("habit-edit")) {
+        let habitName = e.target.parentNode.parentNode.parentNode.parentNode.firstElementChild.innerText
+        // Получаем NodeList всех дивов с наименованиями привычек
+        const habits = document.querySelectorAll("div .habit-name")
+        // Перебираем NodeList для поиска указанной привычки
+        for (const habit of habits) {
+            // Если нашли нужную, редактируем её в DOM,
+            if (habit.innerText === habitName) {
+                // TODO: выводить всплывашку с запросом нового имени
+                // TODO: обновить имя привычки в хранилище
+                // TODO: обновить имя привычки в DOM
+                console.log(habitName)
+                document.querySelector("#habitNewName").value = habitName
+                document.querySelector(".modal").classList.add("is-active")
+            }
+        }
+        // Удаляем привычку из списка в текущем месяце в локальном хранилище
+        // december.deleteHabit(habitName)
+    }
+}
+
+// Редактирует сохраняем новое имя привычки
+// TODO: Переписать для произвольного месяца
+// FIXME: Нужно получить и сохранить первоначальное имя привычки,
+//  чтобы потом по нему искать эту привычку в массиве.
+function saveNewHabitName(e) {
+    console.log(e)
+    const oldName = e.target.value
+    console.log("Получил старое имя:", oldName)
+    // Если нажата клавиша Ввод
+    if (e.key === "Enter") {
+        let newName = e.target.value
+        console.log("Нажал Enter. Старое имя:", oldName)
+        console.log("Нажал Enter. Новое имя:", newName)
+    }
+}
+
+// Закрываем модальное окно
+function closeModal() {
+    document.querySelector(".modal").classList.remove("is-active")
+}
+
 function init() {
     // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
     let theMonthParent = document.querySelector("#month")
     theMonthParent.addEventListener("click", setHabitState, false)
     theMonthParent.addEventListener("click", deleteHabit, false)
+    theMonthParent.addEventListener("click", editHabit, false)
+
+    // Закрывашка модального окна
+    document.querySelector(".modal-close").addEventListener("click", closeModal, false)
+    // Input модального окна
+    document.querySelector("#habitNewName").addEventListener("keydown", saveNewHabitName, false)
+    document.querySelector("#habitNewName").addEventListener("click", saveNewHabitName, false)
 
     // Вешаем обработчик нажатия клавиш в поле input
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
