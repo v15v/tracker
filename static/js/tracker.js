@@ -198,6 +198,10 @@ class Month {
 
 }
 
+// Переменная для хранения старого значения имени привычки.
+// Пишем в нее при клике иконки редактирования.
+let habitOldName = ""
+
 // FIXME: Переписать для произвольного месяца
 let december = new Month({name: "December", days: 31, habits: []})
 // Пробуем загрузить данные из локального хранилища
@@ -246,6 +250,10 @@ function addNewHabitHandler(e) {
     // Если нажата клавиша Ввод
     if (e.key === "Enter") {
         let name = document.querySelector("#addHabit")
+        // TODO: Какие еще проверки нужны?
+        if (name.value === "" || name.value === null) {
+            return
+        }
         let newHabit = new Habit({
             name: name.value,
             planned: [],
@@ -273,7 +281,7 @@ function setHabitState(e) {
     // Так как слушатель вешается на родительский элемент,
     // мы проверяем, что событие вызвано не этим самым родительским элементом,
     // а его потомком.
-    if (e.target != e.currentTarget) {
+    if (e.target !== e.currentTarget) {
         // Так же нужно проигнорировать событие,
         // если его оно сработало на элементах c перечисленными классами.
         // Так как они являются потомками нашего #month, но не являются днями месяца.
@@ -341,18 +349,18 @@ function editHabit(e) {
     // Клик был по иконке edit - нужно подняться по дереву выше,
     // чтобы найти наименование привычки
     if (e.target.classList.contains("habit-edit")) {
-        let habitName = e.target.parentNode.parentNode.parentNode.parentNode.firstElementChild.innerText
+        habitOldName = e.target.parentNode.parentNode.parentNode.parentNode.firstElementChild.innerText
         // Получаем NodeList всех дивов с наименованиями привычек
         const habits = document.querySelectorAll("div .habit-name")
         // Перебираем NodeList для поиска указанной привычки
         for (const habit of habits) {
             // Если нашли нужную, редактируем её в DOM,
-            if (habit.innerText === habitName) {
+            if (habit.innerText === habitOldName) {
                 // TODO: выводить всплывашку с запросом нового имени
                 // TODO: обновить имя привычки в хранилище
                 // TODO: обновить имя привычки в DOM
-                console.log(habitName)
-                document.querySelector("#habitNewName").value = habitName
+                console.log(habitOldName)
+                document.querySelector("#habitNewName").value = habitOldName
                 document.querySelector(".modal").classList.add("is-active")
             }
         }
@@ -363,18 +371,41 @@ function editHabit(e) {
 
 // Редактирует сохраняем новое имя привычки
 // TODO: Переписать для произвольного месяца
-// FIXME: Нужно получить и сохранить первоначальное имя привычки,
-//  чтобы потом по нему искать эту привычку в массиве.
+// TODO: Как обойтись без глобальной переменной habitOldName???
 function saveNewHabitName(e) {
-    console.log(e)
-    const oldName = e.target.value
-    console.log("Получил старое имя:", oldName)
     // Если нажата клавиша Ввод
     if (e.key === "Enter") {
         let newName = e.target.value
-        console.log("Нажал Enter. Старое имя:", oldName)
-        console.log("Нажал Enter. Новое имя:", newName)
+        // Получаем объект привычки из массива текущего месяца
+        let habit = getHabitByName(december, habitOldName)
+        // Меняем имя привычки в объекте
+        habit.name = newName
+
+        // Получаем элемент DOM, содержащий имя этой привычки
+        let element = getHabitNameDOM(habitOldName)
+        // Меняем имя привычки в DOM
+        element.innerText = newName
+
+        // Сохраняем состояние месяца в локальное хранилище
+        december.saveToLocalStorage()
+
+        // Закрываем модальное окно
+        closeModal()
     }
+}
+
+// Получаем элемент DOM, содержащий имя привычки
+function getHabitNameDOM(name) {
+    // Выбираем все элементы содержащие имена привычек
+    const elements = document.querySelectorAll(".habit-name")
+    // Возвращаем тот из них, который содержит нужное имя
+    for (const element of elements) {
+        if (element.innerText === name) {
+            return element
+        }
+    }
+    // Если ничего не найдено, возвращаем null
+    return null
 }
 
 // Закрываем модальное окно
@@ -385,17 +416,21 @@ function closeModal() {
 function init() {
     // Вешаем обработчик родительский элемент, который содержит все наши дни трекера
     let theMonthParent = document.querySelector("#month")
+    // Изменение статуса привычки на указанный день
     theMonthParent.addEventListener("click", setHabitState, false)
+    // Удаление привычки
     theMonthParent.addEventListener("click", deleteHabit, false)
+    // Редактирование привычки
     theMonthParent.addEventListener("click", editHabit, false)
 
-    // Закрывашка модального окна
+    // Закрываем модальное окно
     document.querySelector(".modal-close").addEventListener("click", closeModal, false)
-    // Input модального окна
+    // Input модального окна по клику
     document.querySelector("#habitNewName").addEventListener("keydown", saveNewHabitName, false)
+    // Input модального окна по клавиатуре
     document.querySelector("#habitNewName").addEventListener("click", saveNewHabitName, false)
 
-    // Вешаем обработчик нажатия клавиш в поле input
+    // Вешаем обработчик нажатия клавиш в поле input добавления привычки
     document.querySelector("#addHabit").addEventListener("keydown", addNewHabitHandler, false)
 }
 
