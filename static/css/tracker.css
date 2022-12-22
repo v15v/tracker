@@ -31,6 +31,7 @@
     padding: 0.1em 0.2em 0.1em 0.2em;
     height: 1.9em;
     width: 1.9em;
+    font-size: 0.8em;
 }
 
 .habit-name {
@@ -43,6 +44,7 @@
 
 .habit-icons {
     padding: 0.2em;
+    margin-top: -0.3em;
     height: 1.9em;
     width: 1.9em;
 }
