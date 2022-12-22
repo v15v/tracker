@@ -75,6 +75,8 @@ class Habit {
     }
 
     // Генерируем OuterHTML содержащий все данные для указанной привычки
+    // Для того, чтобы событие по элементу не обрабатывалось, назначаю
+    // такому элементу класс "no-listener"
     getOuterHTML() {
         let html = `<div class="columns is-multiline is-mobile no-listener">
     <div class="column has-text-right tracker has-text-weight-bold habit-name no-listener">
@@ -275,7 +277,6 @@ function setHabitState(e) {
         // Так же нужно проигнорировать событие,
         // если его оно сработало на элементах c перечисленными классами.
         // Так как они являются потомками нашего #month, но не являются днями месяца.
-        // FIXME: Переписать в цикл
         if (e.target.classList.contains("no-listener")) {
             // Выход без каких-либо действий
             return
