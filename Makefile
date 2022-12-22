@@ -19,7 +19,7 @@ build_server_dev:
 	cd server && docker build -t tracker-server:latest -f Dockerfile-dev .
 
 .PHONY: docker-compose
-docker-compose: build_client build_server_dev
+docker-compose: build_client #build_server_dev
 	docker-compose up
 
 .PHONY: go
